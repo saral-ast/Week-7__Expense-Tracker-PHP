@@ -1,0 +1,16 @@
+{
+    "name": "saral/week-7_expense-tracker-php",
+    "autoload": {
+        "psr-4": {
+            "Saral\\Week7ExpenseTrackerPhp\\": "src/",
+            "Core\\":  "Core/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Saral-Chauhangit",
+            "email": "saralchauhan424t@gmail.com"
+        }
+    ],
+    "require": {}
+}
