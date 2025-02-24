@@ -1,16 +1,25 @@
 <?php
 use Core\App;
 use Core\Database;
+use Form\Group;
 
 $db = App::resolve(Database::class);
-// dd('sfsdf');
-// dd($_POST);
+$groupName = trim($_POST['groupName']);
+$hasGroup = (new Group($attribute = [
+    'groupName'=> $groupName
+]))->validate();
+// dd($hasGroup);
+if($hasGroup){
+    $hasGroup -> setErrors('name','Group name already exist')
+              -> throw();
+}
+
+
 $db->query("UPDATE groups SET group_name = :name WHERE id = :id",[
     'name' => $_POST['groupName'],
     'id' => $_POST['id']
 ]);
 
-// $group = $db -> query("SELECT * FROM groups")->get();
-// dd($group);
+
 
 redirect('/');
