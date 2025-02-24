@@ -3,6 +3,7 @@ use Core\App;
 use Core\Database;
 
 $db = App::resolve(Database::class);
+// dd($_POST);
 $db->update("UPDATE expenses 
             SET title = :title, 
                 amount = :amount,  

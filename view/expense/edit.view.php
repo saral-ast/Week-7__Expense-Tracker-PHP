@@ -6,7 +6,7 @@
 <div class="flex justify-center mt-10">
     <div class="bg-white p-8 rounded-xl shadow-xl w-11/12 max-w-lg">
         <h2 class="text-2xl font-semibold mb-6 text-[#223843] text-center">Edit Expense</h2>
-        <form id="expenseForm" action="/expense" method="POST" class="space-y-4">
+        <form id="expenseForm" action="/expenses" method="POST" class="space-y-4">
             <input type="hidden" name="_method" value="PATCH">
             <input type="hidden" name="id" value="<?= $expense['id'] ?>">
            
