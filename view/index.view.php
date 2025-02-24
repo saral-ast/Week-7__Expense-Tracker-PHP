@@ -116,16 +116,16 @@
                           <a href="/expense/edit?id=<?= $expense['id'] ?>" class="bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition">
                             Edit
                           </a>
+                        </td>
                         <td class="p-3 text-left">
-                          <form action="/expense" method="POST">
+                         <form action="/expense" method="POST">
                             <input type="hidden" name="_method" value="DELETE">
                             <input type="hidden" name="id" value="<?= $expense['id'] ?>"> 
                             <button type="submit" class="bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition">
-                              Delete
+                                Delete
                             </button>
-                          </form>
-                        </td>
-                      </tr>
+                        </form>
+                    </td>                      
                     <?php endforeach; ?>
                   </tbody>
                 </table>
@@ -168,15 +168,19 @@
 
 
 <script>
-  $(document).ready(() => {
-    
-    $(".delete-group").click(() => {
-      let groupId = $(this).data("id");
-      let groupName = $(this).data("name");
-      $("#deleteGroupId").val(groupId);
-      $("#deleteMessage").text(`Are you sure you want to delete the group "${groupName}"?`);
-    })
-  });
+ $(document).on("click", ".delete-group", function() {
+    let groupId = $(this).data("id");
+    let groupName = $(this).data("name");
+
+    $("#deleteGroupId").val(groupId);
+    $("#deleteMessage").text(`Are you sure you want to delete the group "${groupName}"?`);
+
+    // Explicitly show the modal
+    $("#deleteModal").removeClass("hidden").addClass("flex");
+});
+
+
+
 </script>
 
 
