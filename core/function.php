@@ -13,3 +13,18 @@ function view($path,$attributes = []){
 function base_path($path){
     return BASE_PATH . $path;
 }
+
+function abort($code = 404){
+    http_response_code($code);
+    require base_path("view/{$code}.php");
+    die();
+}
+
+function redirect($path){
+    header("Location: {$path}");
+    exit();
+}
+
+function old($key,$default = ''){
+    return Core\Session::get('old')[ $key ] ?? $default;
+}

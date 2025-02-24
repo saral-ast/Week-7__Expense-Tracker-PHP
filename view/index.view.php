@@ -10,15 +10,15 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div class="bg-white p-6 shadow-lg rounded-lg text-center">
                 <h3 class="text-lg font-semibold">Total Expense</h3>
-                <span id="totalExpense" class="text-xl font-bold text-[#223843]"><?= $sum ?? '0' ?></span>
+                <span id="totalExpense" class="text-xl font-bold text-[#223843]"><?= $totalExpense ?></span>
               </div>
               <div class="bg-white p-6 shadow-lg rounded-lg text-center">
                 <h3 class="text-lg font-semibold">Total Expense this Month</h3>
-                <span id="monthExpense" class="text-xl font-bold text-[#223843]"><?= $total ?? '0' ?></span>
+                <span id="monthExpense" class="text-xl font-bold text-[#223843]"><?= $totalCurrentMonth ?></span>
               </div>
               <div class="bg-white p-6 shadow-lg rounded-lg text-center">
                 <h3 class="text-lg font-semibold">Highest Spending this Month</h3>
-                <span id="highestExpense" class="text-xl font-bold text-[#223843]"><?= $max ?? '0' ?></span>
+                <span id="highestExpense" class="text-xl font-bold text-[#223843]"><?= $maxCurrentMonth ?></span>
               </div>
             </div>
           </section>
@@ -27,7 +27,8 @@
           <section id="groups" class="mb-10">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
               <h2 class="text-2xl font-semibold">Groups</h2>
-              <a href="/groups" class="bg-[#223843] text-white px-6 py-2 rounded-lg shadow hover:bg-[#1a2a34] transition w-full sm:w-auto">
+              <a href="/groups" class="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-300 hover:text-black transition 
+              font-medium shadow-md hover:shadow-lg inline-block text-center">
                 + Add Group
               </a>
             </div>
@@ -53,15 +54,17 @@
                         <td class="p-3 text-left"><?= $group['formatted_created_at'] ?></td>
                         <td class="p-3 text-left"><?= floor($group['total']) ?></td>
                         <td>
-                        <a href="/group?id=<?= $group['id'] ?>" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">View Expense</a>
+                        <a href="/group?id=<?= $group['id'] ?>" class="font-medium text-black-600 dark:text-black-800 md:hover:underline">View Expense</a>
                        
                         </td>
                         <td>
-                        <a href="/group/edit?id=<?= $group['id'] ?>" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                        <a href="/group/edit?id=<?= $group['id'] ?>" class="bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition">Edit</a>
                        
                            </td>
                         <td>
-                          <button class="delete-group bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition" 
+                          <button class="delete-group bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition"
+                            data-modal-target="deleteModal" 
+                            data-modal-toggle="deleteModal"  
                             data-id="<?= $group['id'] ?>" 
                             data-name="<?= $group['group_name'] ?>">
                             Delete
@@ -81,8 +84,8 @@
               <h2 class="text-2xl font-semibold">Expense History</h2>
               <a href="/expense"
                 id="addExpense"
-                class="bg-[#223843] text-white px-6 py-2 rounded-lg shadow hover:bg-[#1a2a34] transition w-full sm:w-auto"
-                data-modal-target="expenseModal" data-modal-toggle="expenseModal"
+                class="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-300 hover:text-black transition 
+              font-medium shadow-md hover:shadow-lg inline-block text-center"
               >
                 + Add Expense
               </a>
@@ -107,17 +110,17 @@
                       <tr class="bg-gray-100 text-gray-900 transition">
                         <td class="p-3 text-left"><?= $expense['title'] ?></td>
                         <td class="p-3 text-left"><?= $expense['category'] ?></td>
-                        <td class="p-3 text-left"><?= floor($expense['amount']) ?></td>
+                        <td class="p-3 text-left"><?= $expense['amount'] ?></td>
                         <td class="p-3 text-left"><?= $expense['date'] ?></td>
                         <td class="p-3 text-left">
-                          <a href="/expense/edit?id=<?= $expense['id'] ?>" class="bg-[#223843] text-white px-4 py-2 rounded-lg hover:bg-[#1a2a34] transition">
+                          <a href="/expense/edit?id=<?= $expense['id'] ?>" class="bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition">
                             Edit
                           </a>
                         <td class="p-3 text-left">
                           <form action="/expense" method="POST">
                             <input type="hidden" name="_method" value="DELETE">
                             <input type="hidden" name="id" value="<?= $expense['id'] ?>"> 
-                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300">
+                            <button type="submit" class="bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition">
                               Delete
                             </button>
                           </form>
@@ -133,14 +136,13 @@
 
       
 
-<!-- Flowbite Add Expense Modal -->
 
- 
-  <!-- Flowbite Delete Confirmation Modal -->
-<div id="deleteModal" tabindex="-1" class="hidden fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
+
+<!-- Flowbite Delete Confirmation Modal -->
+<div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
   <div class="relative w-full max-w-md">
     <div class="bg-white p-6 rounded-lg shadow-lg">
-      <button type="button" id="closeModal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
+      <button type="button" data-modal-hide="deleteModal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
@@ -151,7 +153,7 @@
         <input type="hidden" name="_method" value="DELETE">
         <input type="hidden" name="id" id="deleteGroupId">
         <div class="flex justify-end gap-4">
-          <button type="button" id="cancelDelete" class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition">
+          <button type="button" data-modal-hide="deleteModal" class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition">
             Cancel
           </button>
           <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
@@ -166,20 +168,14 @@
 
 
 <script>
-  $(document).ready(function() {
-    $(".delete-group").click(function() {
+  $(document).ready(() => {
+    
+    $(".delete-group").click(() => {
       let groupId = $(this).data("id");
       let groupName = $(this).data("name");
-
       $("#deleteGroupId").val(groupId);
       $("#deleteMessage").text(`Are you sure you want to delete the group "${groupName}"?`);
-
-      $("#deleteModal").removeClass("hidden");
-    });
-
-    $("#cancelDelete, #closeModal").click(function() {
-      $("#deleteModal").addClass("hidden");
-    });
+    })
   });
 </script>
 

@@ -32,14 +32,14 @@
                                 </td>
                                 <td class="p-4"><?= htmlspecialchars($expense['formatted_date']) ?></td>
                                 <td class="p-3 text-left">
-                          <a href="/expense/edit?id=<?= $expense['id'] ?>" class="bg-[#223843] text-white px-4 py-2 rounded-lg hover:bg-[#1a2a34] transition">
+                          <a href="/expense/edit?id=<?= $expense['id'] ?>" class="bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition">
                             Edit
                           </a>
                                 <td class="p-4 text-center">
                                     <form action="/expense" method="POST">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="id" value="<?= $expense['id'] ?>"> 
-                                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300">
+                                        <button type="submit" class="bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition">
                                             Delete
                                         </button>
                                     </form>
@@ -54,13 +54,14 @@
         <!-- Footer Section -->
         <div class="flex justify-between items-center mt-6 border-t pt-4">
             <span class="text-xl font-bold text-[#223843]">
-                Total Expenses: ₹<?= number_format(array_sum(array_column($expenses, 'amount')), 2) ?>
+                Total Expenses: ₹<?=array_sum(array_column($expenses, 'amount')) ?>
             </span>
-            <a href="/" class="bg-[#223843] text-white px-6 py-2 rounded-lg shadow hover:bg-[#1a2a34] transition">
+            <a href="/" class="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-300 hover:text-black transition 
+              font-medium shadow-md hover:shadow-lg inline-block text-center">
                  Back
             </a>
         </div>
     </div>
 </div>
-
+<?php require_once base_path('view/partials/back_button.php'); ?>
 <?php require base_path('view/partials/footer.php'); ?>

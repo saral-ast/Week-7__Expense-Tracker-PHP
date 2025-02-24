@@ -44,20 +44,13 @@ namespace Core;
     public function route($uri,$method){
         foreach($this->routes as $route){
             if($route['uri'] === $uri && $route['method'] === strtoupper($method)){
-
-                //apply middleware
-                // if($route['middleware']){
-                //    Middleware::resolver($route['middleware']);
-                // }
+                // dd($uri);
                 return require base_path($route['controller']);
                 
             }
         }
-    
-  
-    
+         $this->abort(Response::NOT_FOUND);
 
-        // $this->abort(Response::NOT_FOUND);
     }
 
     protected function abort($code = 404){
@@ -72,18 +65,6 @@ namespace Core;
 
 
  }
-
-// $uri = parse_url($_SERVER['REQUEST_URI'])['path'];
-
-
-// $routes = require base_path('routes.php');
-// function routToController($uri, $routes){
-//     if(array_key_exists($uri, $routes)){
-//         require base_path($routes[$uri]);
-//     }else{
-//         abort();
-//     }
-// }
 
 
 

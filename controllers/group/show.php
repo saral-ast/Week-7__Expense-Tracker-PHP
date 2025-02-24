@@ -1,14 +1,20 @@
 <?php
-// dd('sdfsdf');
-// dd($_GET['id']);
-$config = require base_path('config.php');
-$db = new Core\Database($config['database']);
-$expenses = $db->query("SELECT id, title, amount, DATE_FORMAT(date, '%d-%m-%Y') AS formatted_date FROM expenses where group_id = :id",[
+use Core\App;
+use Core\Database;
+
+$db = App::resolve(Database::class);
+$group = $db->select("SELECT * FROM groups WHERE id = :id", ['id' => $_GET['id']])->findOrFail();
+
+
+$expenses = $db->select("SELECT id, title, amount, DATE_FORMAT(date, '%d-%m-%Y') AS formatted_date FROM expenses where group_id = :id",[
     'id' => $_GET['id']
 ])->get();
-// dd($expenses);
+
+$totalExpense = array_sum(array_column($expenses,'amount'));
+
 
 
 view('group/show.view.php',[
-    'expenses'=> $expenses
+    'expenses'=> $expenses,
+    'total'=> $totalExpense
 ]);

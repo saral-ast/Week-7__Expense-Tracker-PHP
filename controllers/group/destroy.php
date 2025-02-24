@@ -1,9 +1,11 @@
 <?php
 
-$config = require base_path('config.php');
-$db = new Core\Database($config['database']);
+use Core\App;
+use Core\Database;
 
-$db->query('DELETE FROM groups WHERE id = :id',[
+$db = App::resolve(Database::class);
+
+$db->delete('DELETE FROM groups WHERE id = :id',[
     'id' => $_POST['id']
 ]);
 

@@ -33,10 +33,26 @@ class Database{
 
     public function findOrFail(){
         $result = $this->find();
-        // if(!$result){
-        //     abort(Response::NOT_FOUND);
-        // }
+       
+        if(!$result){
+            abort(Response::NOT_FOUND);
+        }
         return $result;
     }
+
+      public function select($query,$parameters=[]){
+          return $this->query($query,$parameters);  
+      }
+      public function insert($query,$parameters=[]){
+         $this->query($query,$parameters);
+      }
+
+      public function update($query,$parameters=[]){
+          $this->query($query,$parameters);
+      }
+
+      public function delete($query,$parameters=[]){
+         $this->query($query,$parameters);
+      }
    
 }

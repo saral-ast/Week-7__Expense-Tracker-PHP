@@ -1,10 +1,11 @@
 <?php
-// dd('delete');
-$config = require base_path('config.php');
-$db = new Core\Database($config['database']);
+use Core\App;
+use Core\Database;
 
-$db->query("DELETE FROM expenses WHERE id = :id",[
+$db = App::resolve(Database::class);
+
+$db->delete("DELETE FROM expenses WHERE id = :id",[
     'id' => $_POST['id']
 ]);
-header('Location: /');
-exit();
+
+redirect('/');

@@ -6,10 +6,18 @@ class Validator{
         //  dd(strlen($value) >= $min && strlen($value) <= $max);
          return strlen($value) >= $min && strlen($value) <= $max;
     }
+    
+    public static function validateGroup($value){
+        $value = trim($value);
+        $db = App::resolve(Database::class);
 
-    public static function email(string $value): bool
-    {
-        return filter_var($value, FILTER_VALIDATE_EMAIL);
+        $group = $db->query('SELECT * FROM groups WHERE group_name = :name',[
+                'name' => $value
+            ])->find();
+      
+            
+        return $group ?? false;
+        
     }
 
 }

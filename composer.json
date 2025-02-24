@@ -3,7 +3,8 @@
     "autoload": {
         "psr-4": {
             "Saral\\Week7ExpenseTrackerPhp\\": "src/",
-            "Core\\":  "Core/"
+            "Core\\":  "Core/",
+            "Form\\": "Form/"
         }
     },
     "authors": [

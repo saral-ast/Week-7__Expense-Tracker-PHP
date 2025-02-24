@@ -1,12 +1,9 @@
 <?php
-$config = require base_path('config.php');
-$db = new Core\Database($config['database']);
+use Core\App;
+use Core\Database;
 
-// Debugging - Check posted data
-dd($_POST);
-
-// Update expense details
-$db->query("UPDATE expenses 
+$db = App::resolve(Database::class);
+$db->update("UPDATE expenses 
             SET title = :title, 
                 amount = :amount,  
                 group_id = :group_id, 
