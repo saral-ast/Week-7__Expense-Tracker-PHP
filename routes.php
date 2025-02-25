@@ -14,3 +14,5 @@ $router->patch('/groups','controllers/group/update.php');
 $router->post('/expense','controllers/expense/create.php');
 $router->patch('/expenses','controllers/expense/update.php');
 
+$router->get('/api/groups', 'controllers/group/fetch.php');
+$router->get('/api/expenses', 'controllers/expense/fetch.php');

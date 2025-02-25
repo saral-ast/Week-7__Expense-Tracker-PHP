@@ -27,15 +27,13 @@
           <section id="groups" class="mb-10">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
               <h2 class="text-2xl font-semibold">Groups</h2>
-              <a href="/groups" class="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-300 hover:text-black transition 
+              <button id="addGroupBtn" class="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-300 hover:text-black transition 
               font-medium shadow-md hover:shadow-lg inline-block text-center">
-                + Add Group
-              </a>
+                      + Add Group
+                  </button>
             </div>
             <div class="overflow-x-auto mt-4">
-              <?php if (count($groups) === 0): ?> 
-                <p class="p-3 text-left">No Group Found</p>         
-              <?php else: ?>
+              
                 <table class="min-w-full bg-white shadow-md rounded-lg">
                   <thead class="bg-[#223843] text-white">
                     <tr>
@@ -47,34 +45,8 @@
                       <th class="p-3 text-left">Delete</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <?php foreach ($groups as $group): ?>
-                      <tr class="bg-gray-100 text-gray-900 transition">
-                        <td class="p-3 text-left"><?= $group['group_name'] ?></td>
-                        <td class="p-3 text-left"><?= $group['formatted_created_at'] ?></td>
-                        <td class="p-3 text-left"><?= floor($group['total']) ?></td>
-                        <td>
-                        <a href="/group?id=<?= $group['id'] ?>" class="font-medium text-black-600 dark:text-black-800 md:hover:underline">View Expense</a>
-                       
-                        </td>
-                        <td>
-                        <a href="/group/edit?id=<?= $group['id'] ?>" class="bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition">Edit</a>
-                       
-                           </td>
-                        <td>
-                          <button class="delete-group bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition"
-                            data-modal-target="deleteModal" 
-                            data-modal-toggle="deleteModal"  
-                            data-id="<?= $group['id'] ?>" 
-                            data-name="<?= $group['group_name'] ?>">
-                            Delete
-                          </button>
-                        </td>  
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
+                  <tbody id="groupData" class="text-gray-700"></tbody>
                 </table>
-              <?php endif; ?>
             </div>
           </section>
 
@@ -91,9 +63,7 @@
               </a>
             </div>
             <div class="max-h-96 overflow-y-auto px-2 mt-4">
-              <?php if(count($expenses) === 0): ?> 
-                <p class="p-3 text-left">No Expense Found</p>
-              <?php else: ?>
+              
                 <table class="min-w-full bg-white shadow-md rounded-lg">
                   <thead class="bg-[#223843] text-white">
                     <tr>
@@ -105,83 +75,102 @@
                       <th class="p-3 text-left">Delete</th>
                     </tr>
                   </thead>
-                  <tbody id="expenseData" class="text-gray-700">
-                    <?php foreach($expenses as $expense): ?>
-                      <tr class="bg-gray-100 text-gray-900 transition">
-                        <td class="p-3 text-left"><?= $expense['title'] ?></td>
-                        <td class="p-3 text-left"><?= $expense['category'] ?></td>
-                        <td class="p-3 text-left"><?= $expense['amount'] ?></td>
-                        <td class="p-3 text-left"><?= $expense['date'] ?></td>
-                        <td class="p-3 text-left">
-                          <a href="/expense/edit?id=<?= $expense['id'] ?>" class="bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition">
-                            Edit
-                          </a>
-                        </td>
-                        <td class="p-3 text-left">
-                         <form action="/expense" method="POST">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <input type="hidden" name="id" value="<?= $expense['id'] ?>"> 
-                            <button type="submit" class="bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition">
-                                Delete
-                            </button>
-                        </form>
-                    </td>                      
-                    <?php endforeach; ?>
-                  </tbody>
+                  <tbody id="expenseData" class="text-gray-700"></tbody>
                 </table>
-              <?php endif; ?>
             </div>
           </section>
         </div>
 
-      
+<?php require base_path('view/group/index.view.php'); ?>
 
-
-
-<!-- Flowbite Delete Confirmation Modal -->
-<div id="deleteModal" tabindex="-1" aria-hidden="true" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
-  <div class="relative w-full max-w-md">
-    <div class="bg-white p-6 rounded-lg shadow-lg">
-      <button type="button" data-modal-hide="deleteModal" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-      <h2 class="text-xl font-bold mb-4">Confirm Deletion</h2>
-      <p id="deleteMessage" class="mb-4 text-gray-600"></p>
-      <form id="deleteForm" method="POST" action="/group">
-        <input type="hidden" name="_method" value="DELETE">
-        <input type="hidden" name="id" id="deleteGroupId">
-        <div class="flex justify-end gap-4">
-          <button type="button" data-modal-hide="deleteModal" class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition">
-            Cancel
-          </button>
-          <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
-            Delete
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
- $(document).on("click", ".delete-group", function() {
-    let groupId = $(this).data("id");
-    let groupName = $(this).data("name");
-
-    $("#deleteGroupId").val(groupId);
-    $("#deleteMessage").text(`Are you sure you want to delete the group "${groupName}"?`);
-
-    // Explicitly show the modal
-    $("#deleteModal").removeClass("hidden").addClass("flex");
+ $(document).ready(function () {
+    loadGroups();
+    loadExpenses();
 });
+
+// Fetch Groups via AJAX
+function loadGroups() {
+    $.ajax({
+        url: "/api/groups",
+        type: "GET",
+        dataType: "json",
+        success: function (response) {
+            console.log("API Response:", response); // Debugging Step
+
+            if (!Array.isArray(response)) {
+                console.error("Error: API did not return an array!", response);
+                return;
+            }
+
+            let groupTable = $("#groupData").empty();
+
+            if (response.length === 0) {
+                groupTable.html("<tr><td colspan='6' class='p-3 text-left'>No Groups Found</td></tr>");
+                return;
+            }
+
+            $.each(response, function (index, group) {
+                let row = `
+                    <tr class="bg-gray-100 text-gray-900">
+                        <td class="p-3 text-left">${group.group_name}</td>
+                        <td class="p-3 text-left">${group.formatted_created_at}</td>
+                        <td class="p-3 text-left">${Math.floor(group.total)}</td>
+                        <td><a href="/group?id=${group.id}" class="text-blue-500 hover:underline">View</a></td>
+                        <td><button class="edit-group bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition" data-id="${group.id}">Edit</button></td>
+                        <td><button class="delete-group bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition" data-id="${group.id}">Delete</button></td>
+                    </tr>
+                `;
+                groupTable.append(row);
+            });
+        },
+        error: function (xhr) {
+            console.error("AJAX Error:", xhr.responseText);
+            toastr.error("Failed to load groups. Please try again.", "Error");
+        }
+    });
+}
+
+// Fetch Expenses via AJAX
+function loadExpenses() {
+    $.ajax({
+        url: "/api/expenses",
+        type: "GET",
+        dataType: "json",
+        success: function (response) {
+            let expenseTable = $("#expenseData").empty();
+
+            if (response.length === 0) {
+                expenseTable.html("<tr><td colspan='6' class='p-3 text-left'>No Expenses Found</td></tr>");
+                return;
+            }
+
+            $.each(response, function (index, expense) {
+                let row = `
+                    <tr class="bg-gray-100 text-gray-900">
+                        <td class="p-3 text-left">${expense.title}</td>
+                        <td class="p-3 text-left">${expense.category}</td>
+                        <td class="p-3 text-left">${expense.amount}</td>
+                        <td class="p-3 text-left">${expense.date}</td>
+                        <td><button class="edit-expense bg-blue-500 text-white px-4 py-2 rounded" data-id="${expense.id}">Edit</button></td>
+                        <td><button class="delete-expense bg-red-500 text-white px-4 py-2 rounded" data-id="${expense.id}">Delete</button></td>
+                    </tr>
+                `;
+                expenseTable.append(row);
+            });
+        },
+        error: function (xhr) {
+            console.error("Error fetching expenses:", xhr.responseText);
+            toastr.error("Failed to load expenses. Please try again.", "Error");
+        }
+    });
+}
 
 
 
 </script>
+
 
 
 <?php require 'partials/footer.php'; ?>

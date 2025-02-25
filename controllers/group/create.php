@@ -1,26 +1,35 @@
 <?php
-// dd('group');
 use Core\App;
 use Core\Database;
-use Form\Group;
+
+header('Content-Type: application/json'); // Ensure JSON Response
 
 $db = App::resolve(Database::class);
 
-$groupName = trim($_POST['groupName']);
+// Get Data from POST Request
+$groupName = trim($_POST['group_name'] ?? '');
 
-$hasGroup = (new Group($attribute = [
-    'groupName'=> $groupName
-]))->validate();
-// dd($hasGroup);
-if($hasGroup){
-    $hasGroup -> setErrors('name','Group name already exist')
-              -> throw();
+// Validation
+if (empty($groupName) || strlen($groupName) < 2) {
+    echo json_encode(["success" => false, "error" => "Group name must be at least 2 characters."]);
+    exit;
 }
 
-//if already exist than it means it throw an exception
+// Check if group already exists (case-insensitive)
+$existingGroup = $db->query("SELECT id FROM groups WHERE LOWER(group_name) = LOWER(:name)", [
+    'name' => $groupName
+])->find();
 
-$db->insert('INSERT INTO groups (group_name) VALUES (:name)',[
-    'name'=> $groupName
+if ($existingGroup) {
+    echo json_encode(["success" => false, "error" => "Group name already exists."]);
+    exit;
+}
+
+// Insert new group
+$db->query("INSERT INTO groups (group_name) VALUES (:name)", [
+    'name' => $groupName
 ]);
 
-redirect('/');
+// Return success response
+echo json_encode(["success" => true, "message" => "Group added successfully!"]);
+exit;
