@@ -105,6 +105,12 @@
 <?php require base_path('view/expense/edit.view.php'); ?>
 <script>
  $(document).ready(function () {
+  toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "timeOut": "5000"
+        };
     loadGroups();
     loadExpenses();
     
@@ -115,7 +121,7 @@ function updateDashboard() {
         url: "/api/dashboard", // Make sure this endpoint returns the updated dashboard values
         type: "GET",
         dataType: "json",
-        success: function (response) {
+        success:  (response) =>{
             if (response.success) {
                 // Update the values in the dashboard
                 $("#totalExpense").text(response.totalExpense);
@@ -126,7 +132,7 @@ function updateDashboard() {
                 toastr.error("Failed to update dashboard", "Error");
             }
         },
-        error: function (xhr) {
+        error: (xhr) => {
             console.error("AJAX Error:", xhr.responseText);
             toastr.error("Error fetching dashboard data", "Error");
         }
@@ -139,7 +145,7 @@ function loadGroups() {
         url: "/api/groups",
         type: "GET",
         dataType: "json",
-        success: function (response) {
+        success:  (response) => {
             console.log("API Response:", response); // Debugging Step
 
             if (!Array.isArray(response)) {
@@ -180,7 +186,7 @@ function loadExpenses() {
         url: "/api/expenses",
         type: "GET",
         dataType: "json",
-        success: function (response) {
+        success:  (response) => {
             let expenseTable = $("#expenseData").empty();
           
             if (response.length === 0) {
@@ -202,7 +208,7 @@ function loadExpenses() {
                 expenseTable.append(row);
             });
         },
-        error: function (xhr) {
+        error:  (xhr) => {
             console.error("Error fetching expenses:", xhr.responseText);
             toastr.error("Failed to load expenses. Please try again.", "Error");
         }

@@ -29,12 +29,7 @@
 
 <script>
 $(document).ready(function () {
-        toastr.options = {
-            "closeButton": true,
-            "progressBar": true,
-            "positionClass": "toast-bottom-right",
-            "timeOut": "5000"
-        };
+     
         
         $('#editcloseAddModal').click(function () {
             $('#editGroupModal').addClass('hidden').removeClass('flex');
