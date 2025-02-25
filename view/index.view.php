@@ -54,13 +54,11 @@
           <section id="expense">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
               <h2 class="text-2xl font-semibold">Expense History</h2>
-              <a href="/expense"
-                id="addExpense"
-                class="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-300 hover:text-black transition 
+              <button id="addExpense" class="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-300 hover:text-black transition 
               font-medium shadow-md hover:shadow-lg inline-block text-center"
               >
                 + Add Expense
-              </a>
+              </button>
             </div>
             <div class="max-h-96 overflow-y-auto px-2 mt-4">
               
@@ -82,6 +80,7 @@
         </div>
 
 <?php require base_path('view/group/index.view.php'); ?>
+<?php require base_path('view/expense/index.view.php'); ?>
 <script>
  $(document).ready(function () {
     loadGroups();

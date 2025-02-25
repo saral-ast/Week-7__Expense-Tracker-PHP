@@ -1,9 +1,8 @@
-<?php require base_path('view/partials/head.php'); ?>
-<?php require base_path('view/partials/banner.php'); ?>
+
 
 
 <!-- Expense Form -->
-<div class="flex justify-center mt-10">
+<div class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
     <div class="bg-white p-8 rounded-xl shadow-xl w-11/12 max-w-lg">
         <h2 class="text-2xl font-semibold mb-6 text-[#223843] text-center">Add New Expense</h2>
         <form id="expenseForm" action="/expense" method="POST" class="space-y-4">
@@ -92,6 +91,7 @@
 $(document).ready(function () {
     let today = new Date().toISOString().split('T')[0];
     $("#expenseDate").val(today); 
+    
 
     // Custom validation method to prevent future dates
     $.validator.addMethod("noFutureDate",  (value, element) => {
@@ -153,7 +153,3 @@ $(document).ready(function () {
     });
 });
 </script>
-
-
-<?php require_once base_path('view/partials/back_button.php'); ?>
-<?php require base_path('view/partials/footer.php'); ?>

@@ -47,13 +47,11 @@
             "closeButton": true,
             "progressBar": true,
             "positionClass": "toast-bottom-right",
-            "timeOut": "3000"
+            "timeOut": "500"
         };
 
         // Open Add Group Modal
         $("#addGroupBtn").click(function () {
-            $("#groupName").val(""); // Clear input
-            $("#groupNameError").text(""); // Clear error
             $("#addGroupModal").removeClass("hidden").addClass("flex");
         });
 
@@ -89,30 +87,32 @@
             },
             submitHandler: function (form) {
                 let groupName = $("#groupName").val().trim();
-                $.ajax({
-                url: "/groups",
-                type: "POST",
-                data: { group_name: groupName },
-                dataType: "json",
-                success: function (response) {
-                    if (response.success) {
-                    toastr.success(response.message);
-                    $("#addGroupModal").addClass("hidden");
-                    loadGroups(); // Refresh group list
-                    } else {
-                        $("#groupNameError").text(response.error);
-                    toastr.error(response.error, "Validation Error");
-                    }
-                },
-                error: function (xhr) {
-                    let errorMessage = "Failed to add group. Please try again.";
-                    if (xhr.responseJSON && xhr.responseJSON.error) {
-                    errorMessage = xhr.responseJSON.error;
-                    }
-                    $("#groupNameError").text(errorMessage);
-                    toastr.error(errorMessage, "Server Error");
-                        }
+                        $.ajax({
+                        url: "/groups",
+                        type: "POST",
+                        data: { group_name: groupName },
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.success) {
+                                toastr.success(response.message);
+                                $("#addGroupModal").addClass("hidden");
+                                loadGroups(); // Refresh group list
+                               
+                            } else {
+                                $("#groupNameError").text(response.error);
+                            toastr.error(response.error, "Validation Error");
+                            }
+                        },
+                        error: function (xhr) {
+                            let errorMessage = "Failed to add group. Please try again.";
+                                if (xhr.responseJSON && xhr.responseJSON.error) {
+                                    errorMessage = xhr.responseJSON.error;
+                                }
+                                $("#groupNameError").text(errorMessage);
+                                toastr.error(errorMessage, "Server Error");
+                            }
                         });
+                        $("#addGroupForm")[0].reset();
                 }
         });
 
