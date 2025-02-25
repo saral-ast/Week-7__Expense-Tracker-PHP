@@ -26,20 +26,7 @@
     </div>
 </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
-    <div class="relative w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-xl font-bold mb-4">Confirm Deletion</h2>
-        <p id="deleteMessage" class="mb-4 text-gray-600"></p>
-        <form id="deleteForm">
-        <input type="hidden" name="id" id="deleteGroupId">
-        <div class="flex justify-end gap-4">
-            <button type="button" id="closeDeleteModal" class="bg-gray-300 text-black px-5 py-2 rounded-lg hover:bg-gray-900 hover:text-white transition font-medium shadow-md hover:shadow-lg inline-block text-center">Cancel</button>
-            <button type="submit" class="bg-gray-100 border border-red-500 text-red-900 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition">Delete</button>
-        </div>
-        </form>
-    </div>
-    </div>
+
 
     <script>
     $(document).ready(function () {
@@ -47,7 +34,7 @@
             "closeButton": true,
             "progressBar": true,
             "positionClass": "toast-bottom-right",
-            "timeOut": "500"
+            "timeOut": "5000"
         };
 
         // Open Add Group Modal
@@ -96,11 +83,12 @@
                             if (response.success) {
                                 toastr.success(response.message);
                                 $("#addGroupModal").addClass("hidden");
-                                loadGroups(); // Refresh group list
+                                loadGroups();
+                                loadCategory(); // Refresh group list
                                
                             } else {
                                 $("#groupNameError").text(response.error);
-                            toastr.error(response.error, "Validation Error");
+                                toastr.error(response.error, "Validation Error");
                             }
                         },
                         error: function (xhr) {
@@ -119,21 +107,24 @@
         // Open Delete Confirmation Modal
         $(document).on("click", ".delete-group", function () {
             let groupId = $(this).data("id");
-            $("#deleteGroupId").val(groupId);
+            $("#deleteId").val(groupId);
             $("#deleteMessage").text("Are you sure you want to delete this group?");
             $("#deleteModal").removeClass("hidden").addClass("flex");
+            $("#deleteFormGroup").removeClass("hidden");
         });
 
         // Close Delete Modal
         $("#closeDeleteModal").click(function () {
             $("#deleteModal").addClass("hidden");
+            $("#deleteFormGroup").addClass("hidden");
         });
 
         // Handle AJAX Delete Request
-        $("#deleteForm").submit(function (e) {
+        $("#deleteFormGroup").submit(function (e) {
             e.preventDefault();
 
-            let groupId = $("#deleteGroupId").val();
+            let groupId = $("#deleteId").val();
+            console.log(groupId);
 
             $.ajax({
                 url: "/group",
@@ -144,18 +135,21 @@
                     if (response.success) {
                         toastr.success(response.message);
                         loadGroups(); // Refresh group list
+                        loadExpenses(); // Refresh expense list
+                        loadCategory(); // Refresh category list
+                        updateDashboard(); // Refresh dashboard
                     } else {
                         toastr.error(response.error, "Error");
                     }
                     $("#deleteModal").addClass("hidden");
+                    $("#deleteFormGroup").addClass("hidden");
                 },
                 error: () => {
                     toastr.error("Failed to delete group. Please try again.", "Server Error");
                     $("#deleteModal").addClass("hidden");
+                    $("#deleteFormGroup").addClass("hidden");
                 }
             });
-        });
-
-      
+        });      
     });
 </script>

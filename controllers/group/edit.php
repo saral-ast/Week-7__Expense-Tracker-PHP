@@ -1,7 +1,8 @@
 <?php
 use Core\App;
 use Core\Database;
-use Core\Session;
+
+header('Content-Type: application/json'); 
 
 $db = App::resolve(Database::class);
 $group = $db->query('SELECT * FROM groups WHERE id = :id',[
@@ -9,7 +10,4 @@ $group = $db->query('SELECT * FROM groups WHERE id = :id',[
 ])->findOrFail();
 // dd($name);
 
-view('group/edit.view.php',[
-    'group'=> $group,
-    'errors' => Session::get('name'),
-]);
+echo json_encode($group);

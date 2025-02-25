@@ -2,10 +2,14 @@
 use Core\App;
 use Core\Database;
 
+header('Content-Type: application/json'); // Ensure JSON Response
+
 $db = App::resolve(Database::class);
 
+
+
 // Insert Expense
-$db->select('INSERT INTO expenses (title, amount, group_id, date) 
+$db->query('INSERT INTO expenses (title, amount, group_id, date) 
             VALUES (:title, :amount, :group_id, DATE_FORMAT(:date, "%Y-%m-%d"))', [
     'title' => $_POST['title'],
     'amount' => $_POST['amount'],
@@ -13,6 +17,5 @@ $db->select('INSERT INTO expenses (title, amount, group_id, date)
     'date' => $_POST['date']
 ]);
 
-
-// Redirect to Home
-redirect('/');
+echo json_encode(["success" => true, "message" => "Expense added successfully!"]);
+exit;

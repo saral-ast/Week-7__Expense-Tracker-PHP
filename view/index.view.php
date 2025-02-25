@@ -40,7 +40,6 @@
                       <th class="p-3 text-left">Group Name</th>
                       <th class="p-3 text-left">Created Date</th>
                       <th class="p-3 text-left">Total Amount</th>
-                      <th class="p-3 text-left">View</th>
                       <th class="p-3 text-left">Edit</th>
                       <th class="p-3 text-left">Delete</th>
                     </tr>
@@ -54,7 +53,7 @@
           <section id="expense">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
               <h2 class="text-2xl font-semibold">Expense History</h2>
-              <button id="addExpense" class="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-300 hover:text-black transition 
+              <button id="addExpensebtn" class="bg-gray-900 text-white px-5 py-2 rounded-lg hover:bg-gray-300 hover:text-black transition 
               font-medium shadow-md hover:shadow-lg inline-block text-center"
               >
                 + Add Expense
@@ -79,14 +78,60 @@
           </section>
         </div>
 
+            <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
+    <div class="relative w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-xl font-bold mb-4">Confirm Deletion</h2>
+        <p id="deleteMessage" class="mb-4 text-gray-600"></p>
+        <form id="deleteFormGroup" class="hidden">
+            <input type="hidden" name="id" id="deleteId">
+            <div class="flex justify-end gap-4">
+               <button type="submit" class="bg-gray-100 border border-red-500 text-red-900 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition">Delete-Group</button>
+            </div>
+        </form>
+        <form id="deleteFormExpense" class="hidden">
+            <input type="hidden" name="id" id="deleteId">
+            <div class="flex justify-end gap-4">
+              <button type="submit" class="bg-gray-100 border border-red-500 text-red-900 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition">Delete-Expense</button>
+            </div>
+        </form>
+        <button type="button" id="closeDeleteModal" class="bg-gray-300 text-black px-5 py-2 rounded-lg hover:bg-gray-900 hover:text-white transition font-medium shadow-md hover:shadow-lg inline-block text-center">Cancel</button>
+    </div>
+    </div>
+
 <?php require base_path('view/group/index.view.php'); ?>
 <?php require base_path('view/expense/index.view.php'); ?>
+<?php require base_path('view/group/edit.view.php'); ?>
+<?php require base_path('view/expense/edit.view.php'); ?>
 <script>
  $(document).ready(function () {
     loadGroups();
     loadExpenses();
     
 });
+// Function to Update Dashboard Values via AJAX
+function updateDashboard() {
+    $.ajax({
+        url: "/api/dashboard", // Make sure this endpoint returns the updated dashboard values
+        type: "GET",
+        dataType: "json",
+        success: function (response) {
+            if (response.success) {
+                // Update the values in the dashboard
+                $("#totalExpense").text(response.totalExpense);
+                $("#monthExpense").text(response.totalCurrentMonth);
+                $("#highestExpense").text(response.maxCurrentMonth);
+            } else {
+                console.error("Failed to update dashboard:", response.message);
+                toastr.error("Failed to update dashboard", "Error");
+            }
+        },
+        error: function (xhr) {
+            console.error("AJAX Error:", xhr.responseText);
+            toastr.error("Error fetching dashboard data", "Error");
+        }
+    });
+}
 
 // Fetch Groups via AJAX
 function loadGroups() {
@@ -115,8 +160,7 @@ function loadGroups() {
                         <td class="p-3 text-left">${group.group_name}</td>
                         <td class="p-3 text-left">${group.formatted_created_at}</td>
                         <td class="p-3 text-left">${Math.floor(group.total)}</td>
-                        <td><a href="/group?id=${group.id}" class="text-blue-500 hover:underline">View</a></td>
-                        <td><button class="edit-group bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition" data-id="${group.id}">Edit</button></td>
+                        <td><button class="edit-group bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition" data-id="${group.id}" data-name= "${group.group_name}">Edit</button></td>
                         <td><button class="delete-group bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition" data-id="${group.id}">Delete</button></td>
                     </tr>
                 `;
@@ -138,12 +182,12 @@ function loadExpenses() {
         dataType: "json",
         success: function (response) {
             let expenseTable = $("#expenseData").empty();
-
+          
             if (response.length === 0) {
                 expenseTable.html("<tr><td colspan='6' class='p-3 text-left'>No Expenses Found</td></tr>");
                 return;
             }
-
+            console.log("Expenses:", response);
             $.each(response, function (index, expense) {
                 let row = `
                     <tr class="bg-gray-100 text-gray-900">
@@ -151,8 +195,8 @@ function loadExpenses() {
                         <td class="p-3 text-left">${expense.category}</td>
                         <td class="p-3 text-left">${expense.amount}</td>
                         <td class="p-3 text-left">${expense.date}</td>
-                        <td><button class="edit-expense bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition" data-id="${expense.id}">Edit</button></td>
-                        <td><button class="delete-expense bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition" data-id="${expense.id}">Delete</button></td>
+                        <td><button class="edit-expense bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition" data-id="${expense.expense_id}">Edit</button></td>
+                        <td><button class="delete-expense bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition" data-id="${expense.expense_id}">Delete</button></td>
                     </tr>
                 `;
                 expenseTable.append(row);
@@ -164,8 +208,6 @@ function loadExpenses() {
         }
     });
 }
-
-
 
 </script>
 
