@@ -109,7 +109,7 @@
             "closeButton": true,
             "progressBar": true,
             "positionClass": "toast-bottom-right",
-            "timeOut": "5000"
+            "timeOut": "500"
         };
     loadGroups();
     loadExpenses();

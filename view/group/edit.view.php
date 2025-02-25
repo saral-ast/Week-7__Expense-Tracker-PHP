@@ -44,12 +44,8 @@ $(document).ready(function () {
                 url: "/group/edit",
                 data: {id: $(this).data('id')},
                 success: function (response) {
-
                     $('#editgroupName').val(response.group_name);
-                    $('#editGroupId').val(response.id);
-
-                   
-               
+                    $('#editGroupId').val(response.id);               
                 },
                 error:  (response)=>{
                     console.log('error',response);
@@ -97,15 +93,19 @@ $(document).ready(function () {
                     data: JSON.stringify(formData),
                     contentType: "application/json",
                     dataType: "json",
-                    success: function (response) {
-                        toastr.success("Group updated successfully!");
-                        $('#editGroupModal').addClass('hidden').removeClass('flex');
-                        loadGroups();
-                        loadExpenses();
-                        loadCategory();
+                    success:  (response) =>{
+                        if(response.success){
+                            toastr.success("Group updated successfully!");
+                            $('#editGroupModal').addClass('hidden').removeClass('flex');
+                            loadGroups();
+                            loadExpenses();
+                            loadCategory();
+                        }else{
+                            toastr.error(response.message);
+                        }
                         
                     },
-                    error: function (response) {
+                    error:  (response) => {
                         console.error("API Error:", response); // Debugging Step
                         toastr.error("An error occurred while updating the group!");
                     }
