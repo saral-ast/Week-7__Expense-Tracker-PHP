@@ -85,6 +85,7 @@
                                 $("#addGroupModal").addClass("hidden");
                                 loadGroups();
                                 loadCategory(); // Refresh group list
+                                updateDashboard(); // Refresh dashboard
                                
                             } else {
                                 $("#groupNameError").text(response.error);

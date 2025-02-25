@@ -20,18 +20,12 @@
             </div>
 
             <div>
-                <label for="group_id" class="block text-gray-700 font-medium">Select Group</label>
-                <?php if (count($groups) === 0): ?>
-                <input type="text"
-                    class="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
-                    placeholder="No Group Found" disabled />
-                <?php else: ?>
+                
                 <select id="group_id" name="group_id"
                     class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#223843] focus:border-[#223843] transition"
                     required>
                     <option value="">Choose a Group</option>
                   </select>
-                <?php endif; ?>
                 <span class="text-red-500 text-sm error-message"></span>
             </div>
 
