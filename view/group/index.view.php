@@ -1,14 +1,9 @@
-<?php require base_path('view/partials/head.php'); ?>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
     <!-- Add Group Modal -->
-    <div id="addGroupModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
+<div id="addGroupModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 p-4">
     <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-lg">
         <h2 class="text-2xl font-bold text-[#223843] text-center mb-6">Create a New Group</h2>
         <form id="addGroupForm">
-            <input type="hidden" id="id" name="id" value="group" />
-            
+      
             <!-- Group Name Input -->
             <div class="mb-6">
                 <label for="groupName" class="block text-md font-medium text-[#223843] mb-2">Group Name</label>
@@ -48,108 +43,119 @@
 
     <script>
     $(document).ready(function () {
-    toastr.options = {
-        "closeButton": true,
-        "progressBar": true,
-        "positionClass": "toast-bottom-right",
-        "timeOut": "3000"
-    };
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-bottom-right",
+            "timeOut": "3000"
+        };
 
-    loadGroups(); // Initial load of groups
+        // Open Add Group Modal
+        $("#addGroupBtn").click(function () {
+            $("#groupName").val(""); // Clear input
+            $("#groupNameError").text(""); // Clear error
+            $("#addGroupModal").removeClass("hidden").addClass("flex");
+        });
 
-    // Open Add Group Modal
-    $("#addGroupBtn").click(function () {
-        $("#groupName").val(""); // Clear input
-        $("#groupNameError").text(""); // Clear error
-        $("#addGroupModal").removeClass("hidden").addClass("flex");
-    });
-
-    // Close Add Group Modal
-    $("#closeAddModal").click(function () {
-        $("#addGroupModal").addClass("hidden");
-    });
-
-    // Submit Add Group Form (AJAX)
-    $("#addGroupForm").submit(function (event) {
-        event.preventDefault();
-        let groupName = $("#groupName").val().trim();
-        $("#groupNameError").text(""); // Clear error message
-
-        if (groupName.length < 2) {
-        $("#groupNameError").text("Group name must be at least 2 characters.");
-        return;
-        }
-
-        $.ajax({
-        url: "/groups",
-        type: "POST",
-        data: { group_name: groupName },
-        dataType: "json",
-        success: function (response) {
-            if (response.success) {
-            toastr.success(response.message);
+        // Close Add Group Modal
+        $("#closeAddModal").click(function () {
             $("#addGroupModal").addClass("hidden");
-            loadGroups(); // Refresh group list
-            } else {
-            $("#groupNameError").text(response.error);
-            toastr.error(response.error, "Validation Error");
-            }
-        },
-        error: function (xhr) {
-            let errorMessage = "Failed to add group. Please try again.";
-            if (xhr.responseJSON && xhr.responseJSON.error) {
-            errorMessage = xhr.responseJSON.error;
-            }
-            $("#groupNameError").text(errorMessage);
-            toastr.error(errorMessage, "Server Error");
-        }
         });
-    });
 
-    // Open Delete Confirmation Modal
-    $(document).on("click", ".delete-group", function () {
-        let groupId = $(this).data("id");
-        $("#deleteGroupId").val(groupId);
-        $("#deleteMessage").text("Are you sure you want to delete this group?");
-        $("#deleteModal").removeClass("hidden").addClass("flex");
-    });
-
-    // Close Delete Modal
-    $("#closeDeleteModal").click(function () {
-        $("#deleteModal").addClass("hidden");
-    });
-
-    // Handle AJAX Delete Request
-    $("#deleteForm").submit(function (e) {
-        e.preventDefault();
-
-        let groupId = $("#deleteGroupId").val();
-
-        $.ajax({
-        url: "/group",
-        type: "DELETE",
-        data: { id: groupId },
-        dataType: "json",
-        success: function (response) {
-            if (response.success) {
-            toastr.success(response.message);
-            loadGroups(); // Refresh group list
-            } else {
-            toastr.error(response.error, "Error");
-            }
-            $("#deleteModal").addClass("hidden");
-        },
-        error: function () {
-            toastr.error("Failed to delete group. Please try again.", "Server Error");
-            $("#deleteModal").addClass("hidden");
-        }
+        // Submit Add Group Form (AJAX)
+        $("#addGroupForm").validate({
+            rules: {
+                groupName: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 50
+                }
+            },
+            messages: {
+                groupName: {
+                    required: "Group name is required.",
+                    minlength: "Group name must be at least 3 characters.",
+                    maxlength: "Group name must not exceed 50 characters."
+                }
+            },
+            errorPlacement: function (error, element) {
+                $("#groupNameError").html(error);
+            },
+            highlight: function (element) {
+                $(element).addClass("border-red-500").removeClass("border-gray-300");
+            },
+            unhighlight: function (element) {
+                $(element).removeClass("border-red-500").addClass("border-gray-300");
+            },
+            submitHandler: function (form) {
+                let groupName = $("#groupName").val().trim();
+                $.ajax({
+                url: "/groups",
+                type: "POST",
+                data: { group_name: groupName },
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                    toastr.success(response.message);
+                    $("#addGroupModal").addClass("hidden");
+                    loadGroups(); // Refresh group list
+                    } else {
+                        $("#groupNameError").text(response.error);
+                    toastr.error(response.error, "Validation Error");
+                    }
+                },
+                error: function (xhr) {
+                    let errorMessage = "Failed to add group. Please try again.";
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error;
+                    }
+                    $("#groupNameError").text(errorMessage);
+                    toastr.error(errorMessage, "Server Error");
+                        }
+                        });
+                }
         });
+
+        // Open Delete Confirmation Modal
+        $(document).on("click", ".delete-group", function () {
+            let groupId = $(this).data("id");
+            $("#deleteGroupId").val(groupId);
+            $("#deleteMessage").text("Are you sure you want to delete this group?");
+            $("#deleteModal").removeClass("hidden").addClass("flex");
+        });
+
+        // Close Delete Modal
+        $("#closeDeleteModal").click(function () {
+            $("#deleteModal").addClass("hidden");
+        });
+
+        // Handle AJAX Delete Request
+        $("#deleteForm").submit(function (e) {
+            e.preventDefault();
+
+            let groupId = $("#deleteGroupId").val();
+
+            $.ajax({
+                url: "/group",
+                type: "DELETE", // Change from DELETE to POST
+                data: { id: groupId, method: "DELETE" }, // Send method override
+                dataType: "json",
+                success: (response) => {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        loadGroups(); // Refresh group list
+                    } else {
+                        toastr.error(response.error, "Error");
+                    }
+                    $("#deleteModal").addClass("hidden");
+                },
+                error: () => {
+                    toastr.error("Failed to delete group. Please try again.", "Server Error");
+                    $("#deleteModal").addClass("hidden");
+                }
+            });
+        });
+
+      
     });
-
-    // Function to Load Groups
-    
-    });
-    </script>
-
-
-    <?php require base_path('view/partials/footer.php'); ?> 
+</script>

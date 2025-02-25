@@ -9,12 +9,6 @@ $db = App::resolve(Database::class);
 // Get Data from POST Request
 $groupName = trim($_POST['group_name'] ?? '');
 
-// Validation
-if (empty($groupName) || strlen($groupName) < 2) {
-    echo json_encode(["success" => false, "error" => "Group name must be at least 2 characters."]);
-    exit;
-}
-
 // Check if group already exists (case-insensitive)
 $existingGroup = $db->query("SELECT id FROM groups WHERE LOWER(group_name) = LOWER(:name)", [
     'name' => $groupName

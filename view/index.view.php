@@ -1,5 +1,5 @@
-      <?php require 'partials/head.php'; ?>
-      <?php require 'partials/banner.php'; ?>
+<?php require 'partials/head.php'; ?>
+<?php require 'partials/banner.php'; ?>
 
       <div class="container mx-auto p-6">
         <!-- Dashboard -->
@@ -82,12 +82,11 @@
         </div>
 
 <?php require base_path('view/group/index.view.php'); ?>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
  $(document).ready(function () {
     loadGroups();
     loadExpenses();
+    
 });
 
 // Fetch Groups via AJAX
@@ -153,8 +152,8 @@ function loadExpenses() {
                         <td class="p-3 text-left">${expense.category}</td>
                         <td class="p-3 text-left">${expense.amount}</td>
                         <td class="p-3 text-left">${expense.date}</td>
-                        <td><button class="edit-expense bg-blue-500 text-white px-4 py-2 rounded" data-id="${expense.id}">Edit</button></td>
-                        <td><button class="delete-expense bg-red-500 text-white px-4 py-2 rounded" data-id="${expense.id}">Delete</button></td>
+                        <td><button class="edit-expense bg-gray-100 border border-blue-500 text-blue-500 px-4 py-2 rounded-lg hover:bg-blue-800 hover:text-white transition" data-id="${expense.id}">Edit</button></td>
+                        <td><button class="delete-expense bg-gray-100 border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-800 hover:text-white transition" data-id="${expense.id}">Delete</button></td>
                     </tr>
                 `;
                 expenseTable.append(row);
