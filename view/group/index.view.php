@@ -34,6 +34,7 @@
 
         // Open Add Group Modal
         $("#addGroupBtn").click(function () {
+            $("#groupNameError").empty();
             $("#addGroupModal").removeClass("hidden").addClass("flex");
         });
 
